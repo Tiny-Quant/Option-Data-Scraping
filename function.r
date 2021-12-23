@@ -1,6 +1,6 @@
-#Function for repeated use 
+# Function for repeated use 
 
-#Import dependency 
+# Import dependency 
 library(quantmod)
 library(tidyverse)
 
@@ -12,28 +12,24 @@ library(tidyverse)
 # @param upperStrike 
 # @param lowerStrike 
 # @returns: a formatted data frame of option chain data 
-getOptionData = function (symbol = "F", exp, src = "yahoo", type, upperStrike = 5000, lowerStrike = 0){
-  opt_Chain = getOptionChain(Symbols = symbol, Exp = exp, src = src)
-  opt_Chain_return = list()
-  for(name in names(opt_Chain)){
-    opt_Chain_return[[name]] = opt_Chain %>% pluck(
-      name
-    ) %>% pluck(
-      type
-    ) %>% filter(
-      Strike <= upperStrike, Strike >= lowerStrike
-    ) %>% select(
-      Strike, Bid, Ask, Last, Vol
-    )
+getOptionData = function (symbol = "F", exp, src = "yahoo", type, 
+  upperStrike = 5000, lowerStrike = 0){
+    opt_Chain = getOptionChain(Symbols = symbol, Exp = exp, src = src)
+    opt_Chain_return = list()
+    for(name in names(opt_Chain)){
+      opt_Chain_return[[name]] = opt_Chain %>% 
+        pluck(name) %>% 
+        pluck(type) %>% 
+        select(Strike, Bid, Ask, Last, Vol)
   }
   #Data Formating
   #Adding DTE 
-  opt_Chain_return = bind_rows(opt_Chain_return,.id = "Exp")
-  opt_Chain_return$Exp = as.Date(opt_Chain_return$Exp, format = "%b.%d.%Y")
-  opt_Chain_return$Strike = ordered(as.factor(opt_Chain_return$Strike))
-  opt_Chain_return$DTE = (opt_Chain_return$Exp - Sys.Date())
-  return(opt_Chain_return)
-}  
+    opt_Chain_return = bind_rows(opt_Chain_return,.id = "Exp")
+    opt_Chain_return$Exp = as.Date(opt_Chain_return$Exp, format = "%b.%d.%Y")
+    opt_Chain_return$Strike = ordered(as.factor(opt_Chain_return$Strike))
+    opt_Chain_return$DTE = (opt_Chain_return$Exp - Sys.Date())
+    return(opt_Chain_return)
+} 
 
 #Black-Scholes Option Pricing Model 
 # @ param S - the spot price of the underlying stock 
