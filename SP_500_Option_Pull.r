@@ -35,26 +35,45 @@ SP_500_Symbols <- read.csv(file = paste("C:/Users/Admin/Google Drive/",
   "Option-Data-Scraping/SP_500_Symbols.csv", sep = ""))
 names(SP_500_Symbols) <- "Symbol"
 
-## TEST ##
+## Test ##
+SP_500_Symbols = c("AAPL", "F", "GE", "AMZN")
+
+# Calls
 setwd(paste("C:/Users/Public/Data Mining/",
   "Option Data/Historical Quotes - Yahoo/SP_500/Calls",
   sep = ""))
-x <- getOptionData(symbol = "AAPL", exp = c("2021","2022"), type = "calls") %>%
-  mutate(Time_Pull = Sys.time())
-write.csv(x, file = 'test_2.csv')
 
-# Append Test
-y <- getOptionData(symbol = "AMZN", exp = c("2021", "2022"), type = "calls") %>%
-  mutate(Time_Pull = Sys.time())
-write.table(y, file = 'test_2.csv', append = T, sep = ",",
-  quote = F, col.names = F, row.names = T)
+for(symbol in SP_500_Symbols){
+  y <- getOptionData(symbol = symbol,
+    exp = c("2021", "2022", "2023", "2024"),
+    type = "calls") %>%
+        mutate(Time_Pull = Sys.time())
+  write.table(y, file = paste(symbol, "-Calls.csv", sep = ""),
+    append = T, sep = ",", quote = F,
+    col.name = F, row.names = T)
+}
+
+# Puts
+setwd(paste("C:/Users/Public/Data Mining/",
+  "Option Data/Historical Quotes - Yahoo/SP_500/Puts",
+  sep = ""))
+
+for(symbol in SP_500_Symbols){
+  y <- getOptionData(symbol = symbol,
+    exp = c("2021", "2022", "2023", "2024"),
+    type = "puts") %>%
+        mutate(Time_Pull = Sys.time())
+  write.table(y, file = paste(symbol, "-Puts.csv", sep = ""),
+    append = T, sep = ",", quote = F,
+    col.name = F, row.names = T)
+}
 
 # To track execution time.
 end_time <- Sys.time()
-# To report execution time.
-#paste("Executed in ", round(end_time - start_time, 2), " seconds")
-# Write to csv table
-df_ex_time <- cbind(end_time - start_time, Sys.time())
+
+# To keep records of execution times
+df_ex_time <- cbind(end_time - start_time, toString(Sys.time()))
+
 write.table(df_ex_time,
    file = paste("C:/Users/Public/Data Mining/Option Data/",
     "Historical Quotes - Yahoo/SP_500/Execution Times.csv", sep = ""),
