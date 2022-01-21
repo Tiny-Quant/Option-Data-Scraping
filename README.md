@@ -10,7 +10,7 @@ to whatever timezone your computer is in.
 
 function.r: Contains helper functions for the other two scripts. 
 
-Status: Complete. 
+Status: Updating. 
 
 References: 
 Ang, C. S. (2021). Analyzing financial data and implementing financial models using R. 
